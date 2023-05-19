@@ -14,9 +14,10 @@ class UploadSerializer(Serializer):
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields=['username','email','password']
+        fields=['email','first_name','last_name','password']
     
     def create(self, validated_data):
+        validated_data['username']=validated_data['email']
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
 

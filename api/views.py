@@ -9,8 +9,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required 
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class UploadViewSet(ViewSet):
+
+class UploadViewSet(ViewSet,LoginRequiredMixin):
     #serializer to parse the json to python datatypes
     serializer_class=UploadSerializer
 
@@ -24,6 +26,7 @@ class UploadViewSet(ViewSet):
 
 @api_view(["POST"])
 def Signup(request):
+    #parse json to native python format
     serializer=SignupSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
