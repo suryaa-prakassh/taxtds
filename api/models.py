@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,AbstractUser
 
 # Create your models here.
 from django.db import models
@@ -14,4 +14,5 @@ class Upload(models.Model):
         ordering=('-modified_at',)
 
     def __str__(self):
-        return f"{self.ufile}"
+        return f"{self.upload_file}"
+

@@ -1,6 +1,6 @@
 
 from django.urls import path,include
-from .views import UploadViewSet,test
+from .views import UploadViewSet,Signup,Login
 from rest_framework import routers
 
 #for generating automatic url patterns
@@ -9,5 +9,7 @@ router.register(r'upload', UploadViewSet, basename="upload")
 
 urlpatterns=[
     path('',include(router.urls)),
-    path('test/',test,name="test"),
-]
+    path('signup/',Signup,name="signup"),
+    path('login/',Login,name="login")
+        ]
+
