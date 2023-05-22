@@ -12,13 +12,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
+
 class UploadViewSet(LoginRequiredMixin,ViewSet):
     #serializer to parse the json to python datatypes
     serializer_class=UploadSerializer
 
     #post request 
     def create(self,request):
-        file_uploaded=request.FILES.get('file_upload')
+        file_uploaded=request.FILES.get('upload_file')
         response= "You have uploaded a  file"
         new_file=Upload(upload_file=file_uploaded,upload_user=request.user)
         new_file.save()
@@ -61,13 +62,18 @@ class TemplateViewSet(LoginRequiredMixin,ViewSet):
     #serializer to parse the json to python datatypes
     serializer_class=TemplateSerializer
     def list(self,request):
-        files=TemplateModel.objects.get(is_valid==True)
+        files=TemplateSerializer(TemplateModel.objects.all(),many=True) 
+        return Response(files.data)
+
         
 
     #post request 
     def create(self,request):
         if  request.user.is_staff:
-            file_uploaded=request.FILES.get('template')
+            file_uploaded=request.FILES.get('upload_file')
+            date=request.data.get("valid_till")
+            template=TemplateModel(upload_user=request.user,upload_file=file_uploaded,valid_till=date)
+            template.save()
             response= "Template Successfully Uploaded"
             return Response(response)
         else:

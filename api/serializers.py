@@ -3,18 +3,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from rest_framework.generics import CreateAPIView
-
-class UploadSerializer(Serializer):
-    raise_exception = True
-    permission_denied_message = 'You must select an issuer.'
-
-    #change the login url here to redirect to correct page
-    login_url="/api/login"
-
-    file_upload=FileField()
-
-    class meta:
-        fields=['file_upload']
+from .models  import  TemplateModel,Upload
+ 
+class UploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Upload
+        fields=['upload_file']
 
 
 class SignupSerializer(serializers.ModelSerializer):
@@ -28,17 +22,9 @@ class SignupSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class TemplateSerializer(Serializer):
-    raise_exception = True
-    permission_denied_message = 'You must select an issuer.'
-
-    #change the login url here to redirect to correct page
-    login_url="/api/login"
-
-    template=FileField()
-    valid_till=DateField()
-
-    class meta:
-        fields=['template','valid_till']
+class TemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=TemplateModel
+        fields=['upload_file','valid_till']
 
 
