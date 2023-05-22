@@ -5,13 +5,14 @@ from rest_framework.decorators import api_view
 from .serializers import UploadSerializer,SignupSerializer,TemplateSerializer
 from .models import Upload,TemplateModel
 
+from django.http import HttpResponse
+from django.conf import  settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required 
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-
+from datetime import date
 
 class UploadViewSet(LoginRequiredMixin,ViewSet):
     #serializer to parse the json to python datatypes
@@ -62,18 +63,25 @@ class TemplateViewSet(LoginRequiredMixin,ViewSet):
     #serializer to parse the json to python datatypes
     serializer_class=TemplateSerializer
     def list(self,request):
-        files=TemplateSerializer(TemplateModel.objects.all(),many=True) 
-        return Response(files.data)
+        file =TemplateModel.objects.all()[0]
+        today=date.today()
+        #checking if it is valid to download
+        if today <= file.valid_till:
+                file_name=file.upload_file.url.split("/")
+                content=open(str(settings.BASE_DIR)+"\\media\\"+file_name[-1],"rb")
+                response = HttpResponse(content.read(),content_type='application/vnd.ms-excel')
+                response['Content-Disposition'] = 'attachment; filename=template.xlxs'
+                return response
 
+        return Response("No file is available ")
         
 
     #post request 
     def create(self,request):
         if  request.user.is_staff:
-            file_uploaded=request.FILES.get('upload_file')
-            date=request.data.get("valid_till")
-            template=TemplateModel(upload_user=request.user,upload_file=file_uploaded,valid_till=date)
-            template.save()
+            serializer=TemplateSerializer(data=request.data,context={'request':request})
+            if serializer.is_valid():
+                serializer.save()
             response= "Template Successfully Uploaded"
             return Response(response)
         else:

@@ -27,4 +27,11 @@ class TemplateSerializer(serializers.ModelSerializer):
         model=TemplateModel
         fields=['upload_file','valid_till']
 
+    def create(self,validated_data):
+        request=self.context.get("request")
+        validated_data['upload_user']=request.user
+        TemplateModel.objects.all().delete()
+
+        return super().create(validated_data) 
+
 
