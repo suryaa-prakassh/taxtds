@@ -56,6 +56,20 @@ def Login(request):
 def Logout(request):
     logout(request)
     return Response("Logout Successfull")
+@api_view(["GET"])
+def download(request):
+        file =TemplateModel.objects.all()[0]
+        today=date.today()
+        #checking if it is valid to download
+        if today <= file.valid_till:
+                file_name=file.upload_file.url.split("/")
+                content=open(str(settings.BASE_DIR)+"/media/"+file_name[-1],"rb")
+                response = HttpResponse(content.read(),content_type='application/vnd.ms-excel')
+                response['Content-Disposition'] = 'attachment; filename=template.xlxs'
+                return response
+
+        return Response("No file is available ")
+
 
 
 
@@ -63,17 +77,17 @@ class TemplateViewSet(LoginRequiredMixin,ViewSet):
     #serializer to parse the json to python datatypes
     serializer_class=TemplateSerializer
     def list(self,request):
-        file =TemplateModel.objects.all()[0]
-        today=date.today()
-        #checking if it is valid to download
-        if today <= file.valid_till:
-                file_name=file.upload_file.url.split("/")
-                content=open(str(settings.BASE_DIR)+"\\media\\"+file_name[-1],"rb")
-                response = HttpResponse(content.read(),content_type='application/vnd.ms-excel')
-                response['Content-Disposition'] = 'attachment; filename=template.xlxs'
-                return response
+        # file =TemplateModel.objects.all()[0]
+        # today=date.today()
+        # #checking if it is valid to download
+        # if today <= file.valid_till:
+        #         file_name=file.upload_file.url.split("/")
+        #         content=open(str(settings.BASE_DIR)+"\\media\\"+file_name[-1],"rb")
+        #         response = HttpResponse(content.read(),content_type='application/vnd.ms-excel')
+        #         response['Content-Disposition'] = 'attachment; filename=template.xlxs'
+        #         return response
 
-        return Response("No file is available ")
+        return Response("No get method")
         
 
     #post request 

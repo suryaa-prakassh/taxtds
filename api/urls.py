@@ -1,6 +1,7 @@
 
+
 from django.urls import path,include
-from .views import UploadViewSet,Signup,Login,TemplateViewSet,Logout
+from .views import UploadViewSet,Signup,Login,TemplateViewSet,Logout,download
 from rest_framework import routers
 
 #for generating automatic url patterns
@@ -13,5 +14,6 @@ urlpatterns=[
     path('signup/',Signup,name="signup"),
     path('login/',Login,name="login"),
     path('logout/',Logout,name="logout"),
+    path('download/',download,name="download"),
         ]
 

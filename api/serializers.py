@@ -33,5 +33,3 @@ class TemplateSerializer(serializers.ModelSerializer):
         TemplateModel.objects.all().delete()
 
         return super().create(validated_data) 
-
-
